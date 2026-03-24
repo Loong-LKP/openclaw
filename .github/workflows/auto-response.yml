@@ -1,12 +1,13 @@
 name: Auto response
 
-on:
-  issues:
-    types: [opened, edited, labeled]
-  issue_comment:
-    types: [created]
-  pull_request_target: # zizmor: ignore[dangerous-triggers] maintainer-owned label automation; no untrusted checkout or code execution
-    types: [labeled]
+# on:
+#   issues:
+#     types: [opened, edited, labeled]
+#   issue_comment:
+#     types: [created]
+#   pull_request_target: # zizmor: ignore[dangerous-triggers] maintainer-owned label automation; no untrusted checkout or code execution
+#     types: [labeled]
+on: workflow_dispatch
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
