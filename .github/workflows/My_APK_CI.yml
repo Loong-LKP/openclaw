@@ -44,7 +44,7 @@ jobs:
       uses: actions/upload-artifact@v5
       with:
         name: OpenClaw-${{ env.Tag }}
-        path: app/build/outputs/apk/debug/*.apk
+        path: apps/android/app/build/outputs/apk/debug/*.apk
 
     # 将APK改名为标准的版本号名字
     # - name: Change APK name
