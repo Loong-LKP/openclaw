@@ -9,7 +9,7 @@ run-name: Build_Artifact
 on: workflow_dispatch
 
 env:
-  Tag: 1.34.1
+  Tag: 2026.3.8
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ env.Tag }}
 
