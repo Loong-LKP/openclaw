@@ -46,7 +46,3 @@ jobs:
         name: OpenClaw-${{ env.Tag }}
         path: apps/android/app/build/outputs/apk/debug/*.apk
 
-    # 将APK改名为标准的版本号名字
-    # - name: Change APK name
-    #   run: mv *.apk OpenClaw-${{ env.Tag }}.apk
-
