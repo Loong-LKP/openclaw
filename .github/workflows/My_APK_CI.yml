@@ -15,6 +15,9 @@ jobs:
   build:
     name: Generate APK
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/android
 
     steps:
     - uses: actions/checkout@v6
@@ -34,7 +37,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      working-directory: apps/android
       run: ./gradlew :app:assembleRelease
 
     # 上传生成的APK到GitHubActions的网页端，方便下载
