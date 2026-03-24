@@ -1,35 +1,36 @@
 name: Plugin NPM Release
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/plugin-npm-release.yml"
-      - "extensions/**"
-      - "package.json"
-      - "scripts/lib/plugin-npm-release.ts"
-      - "scripts/plugin-npm-publish.sh"
-      - "scripts/plugin-npm-release-check.ts"
-      - "scripts/plugin-npm-release-plan.ts"
-  workflow_dispatch:
-    inputs:
-      publish_scope:
-        description: Publish the selected plugins or all publishable plugins from the ref
-        required: true
-        default: selected
-        type: choice
-        options:
-          - selected
-          - all-publishable
-      ref:
-        description: Commit SHA on main to publish from (copy from the preview run)
-        required: true
-        type: string
-      plugins:
-        description: Comma-separated plugin package names to publish when publish_scope=selected
-        required: false
-        type: string
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - ".github/workflows/plugin-npm-release.yml"
+#       - "extensions/**"
+#       - "package.json"
+#       - "scripts/lib/plugin-npm-release.ts"
+#       - "scripts/plugin-npm-publish.sh"
+#       - "scripts/plugin-npm-release-check.ts"
+#       - "scripts/plugin-npm-release-plan.ts"
+#   workflow_dispatch:
+#     inputs:
+#       publish_scope:
+#         description: Publish the selected plugins or all publishable plugins from the ref
+#         required: true
+#         default: selected
+#         type: choice
+#         options:
+#           - selected
+#           - all-publishable
+#       ref:
+#         description: Commit SHA on main to publish from (copy from the preview run)
+#         required: true
+#         type: string
+#       plugins:
+#         description: Comma-separated plugin package names to publish when publish_scope=selected
+#         required: false
+#         type: string
+on: workflow_dispatch
 
 concurrency:
   group: plugin-npm-release-${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.sha }}
