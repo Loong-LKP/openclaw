@@ -1,11 +1,12 @@
 name: Install Smoke
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
+#   workflow_dispatch:
+on: workflow_dispatch
 
 concurrency:
   group: ${{ github.event_name == 'pull_request' && format('install-smoke-pr-{0}', github.event.pull_request.number) || format('install-smoke-push-{0}', github.run_id) }}
