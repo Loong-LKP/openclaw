@@ -1,18 +1,19 @@
 name: Sandbox Common Smoke
 
-on:
-  push:
-    branches: [main]
-    paths:
-      - Dockerfile.sandbox
-      - Dockerfile.sandbox-common
-      - scripts/sandbox-common-setup.sh
-  pull_request:
-    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
-    paths:
-      - Dockerfile.sandbox
-      - Dockerfile.sandbox-common
-      - scripts/sandbox-common-setup.sh
+# on:
+#   push:
+#     branches: [main]
+#     paths:
+#       - Dockerfile.sandbox
+#       - Dockerfile.sandbox-common
+#       - scripts/sandbox-common-setup.sh
+#   pull_request:
+#     types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
+#     paths:
+#       - Dockerfile.sandbox
+#       - Dockerfile.sandbox-common
+#       - scripts/sandbox-common-setup.sh
+on: workflow_dispatch
 
 concurrency:
   group: sandbox-common-smoke-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
