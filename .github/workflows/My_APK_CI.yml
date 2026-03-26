@@ -25,12 +25,11 @@ jobs:
         ref: ${{ env.Tag }}
 
     # 设置 Java 运行环境
-    - name: Set up JDK 17
+    - name: Set up JDK
       uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
-        java-version: '8'
-        # java-version: '17'
+        java-version: '17'
     # 使用缓存，减少二次构建的时间
         cache: gradle
 
