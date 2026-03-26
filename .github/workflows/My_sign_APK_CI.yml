@@ -1,0 +1,90 @@
+# 用GitHubActions在Fork的别人JAVA编写的开源Android项目仓库中构建一个自签名APK的release安装包
+# 示例：OpenClaw
+# 优先参考别人仓库中的构建信息！
+
+name: Android Sign APP CI
+run-name: Build_Artifact
+
+# 手动触发
+on: workflow_dispatch
+
+env:
+  Tag: v2026.3.8-X
+
+jobs:
+  build:
+    name: Generate APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/android
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        ref: ${{ env.Tag }}
+
+    # 设置 Java 运行环境
+    - name: Set up JDK
+      uses: actions/setup-java@v5
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    # 使用缓存，减少二次构建的时间
+        cache: gradle
+    # 设置gradle缓存
+    - name: Setup Gradle Cache
+      uses: gradle/actions/setup-gradle@v5
+      with:
+        gradle-version: wrapper
+        cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+    # 检查仓库秘钥是否正确设置！
+    # 其中ANDROID_KEYSTORE_BASE64是编码后的字符！
+    - name: Validate Android Signing Secrets
+      run: |
+        missing=0
+        for secret_name in \
+          ANDROID_KEYSTORE_BASE64 \
+          ANDROID_KEYSTORE_PASSWORD \
+          ANDROID_KEY_ALIAS \
+          ANDROID_KEY_PASSWORD; do
+          if [ -z "${!secret_name}" ]; then
+            echo "Missing required secret: $secret_name"
+            missing=1
+          fi
+        done
+
+        if [ "$missing" -ne 0 ]; then
+          echo "Android release build requires signing secrets configured in this fork repository."
+          exit 1
+        fi
+      env:
+        ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+    - name: Decode Keystore
+      run: |
+        echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > app/keystore.jks
+
+    - name: Setup Gradle Properties
+      run: |
+        mkdir -p ~/.gradle
+        echo "OPENCLAW_ANDROID_STORE_FILE=${GITHUB_WORKSPACE}/apps/android/app/keystore.jks" >> ~/.gradle/gradle.properties
+        echo "OPENCLAW_ANDROID_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> ~/.gradle/gradle.properties
+        echo "OPENCLAW_ANDROID_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> ~/.gradle/gradle.properties
+        echo "OPENCLAW_ANDROID_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> ~/.gradle/gradle.properties
+
+    # 构建生成发行版APK
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew :app:assembleRelease --parallel --build-cache --configure-on-demand --no-daemon
+
+    # 上传生成的APK到GitHubActions的网页端，方便下载
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v5
+      with:
+        name: OpenClaw-${{ env.Tag }}
+        path: apps/android/app/build/outputs/apk/release/*.apk
