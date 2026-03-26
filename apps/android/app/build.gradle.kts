@@ -41,8 +41,7 @@ plugins {
 
 android {
     namespace = "ai.openclaw.app"
-    // compileSdk = 36
-    compileSdk = 27
+    compileSdk = 36
 
     // Release signing is local-only; keep the keystore path and passwords out of the repo.
     signingConfigs {
@@ -64,10 +63,8 @@ android {
 
     defaultConfig {
         applicationId = "ai.openclaw.app"
-        // minSdk = 31
-        // target = 36
-        minSdk = 19
-        targetSdk = 27
+        minSdk = 31
+        target = 36
         versionCode = 2026032400
         versionName = "2026.3.24"
         ndk {
